@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ONDE — Des pièces en superposition</title>
+<title>ONDE — Pieces in superposition</title>
 <style>
 /* ============ ONDE — jeu autonome, aucune dépendance externe ============ */
 *{box-sizing:border-box;margin:0;padding:0}
@@ -136,21 +136,39 @@ button.mini{padding:6px 11px;font-size:12px}
 #texte-victoire{color:#cfc8ff;font-size:14.5px;margin-bottom:20px;line-height:1.5}
 
 /* ---------- Écran d'accueil ---------- */
-#modale-accueil{z-index:60;background:rgba(9,5,26,.92)}
-#boite-accueil{width:min(600px,94vw);text-align:center}
-#boite-accueil h2{font-size:38px;letter-spacing:.5em;margin-bottom:4px}
-#accueil-sous{font-size:11.5px;letter-spacing:.26em;text-transform:uppercase;color:rgba(207,200,255,.6)}
-.menu{display:flex;flex-direction:column;gap:12px;margin:26px 0 8px;text-align:left}
-.menu>button{display:block;width:100%;padding:13px 18px;border-radius:12px;text-align:left;
-  font-size:15px;letter-spacing:.04em}
-.menu .menu-desc{display:block;font-size:11.5px;color:#a79edd;margin-top:4px;font-weight:400;
+/* Voile léger : le plateau holo et les particules restent bien visibles derrière. */
+#modale-accueil{z-index:60;background:rgba(9,5,26,.42);backdrop-filter:none;display:block;padding:0}
+#boite-accueil{position:absolute;inset:0;width:auto;max-height:none;overflow:visible;
+  background:none;border:none;box-shadow:none;padding:0;text-align:center}
+#accueil-titre{position:absolute;top:11vh;left:0;right:0}
+#boite-accueil h2{font-size:40px;letter-spacing:.5em;margin-bottom:4px}
+#accueil-sous{font-size:11.5px;letter-spacing:.26em;text-transform:uppercase;color:rgba(207,200,255,.7)}
+.menu-desc{display:block;font-size:11.5px;color:#a79edd;margin-top:4px;font-weight:400;
   letter-spacing:.03em;line-height:1.4}
-#ia-choix{display:flex;gap:10px}
-#ia-choix button{flex:1 1 auto;padding:11px 8px}
-#accueil-statut{min-height:22px;font-size:13px;color:#cfc8ff;line-height:1.5;margin-top:6px}
+#btn-choix-ia{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(330px,86vw);min-width:260px;min-height:106px;padding:16px 26px;border-radius:14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+  font-size:19px;letter-spacing:.05em;
+}
+#btn-choix-ia .menu-desc{margin-top:0;text-align:center}
+#accueil-secondaires{position:absolute;left:50%;top:calc(50% + 80px);transform:translateX(-50%);
+  width:min(470px,88vw);display:flex;flex-direction:column;gap:8px;text-align:left}
+#accueil-secondaires button{display:block;width:100%;padding:9px 14px;border-radius:11px;
+  text-align:left;font-size:13.5px;letter-spacing:.04em}
+#accueil-statut{position:absolute;left:50%;bottom:11vh;transform:translateX(-50%);
+  width:min(600px,90vw);min-height:22px;font-size:13px;color:#cfc8ff;line-height:1.5;text-align:center}
+#btn-accueil-annuler{position:absolute;left:50%;bottom:5vh;transform:translateX(-50%)}
 .pulse-txt{animation:pulse-txt 1.3s ease-in-out infinite}
 @keyframes pulse-txt{0%,100%{opacity:.5}50%{opacity:1}}
-.menu-retour{margin-top:12px}
+@media (max-height:660px){
+  #accueil-titre{top:52px}
+  #boite-accueil h2{font-size:30px}
+  #btn-choix-ia{min-height:92px;font-size:16px}
+  #accueil-secondaires{top:calc(50% + 62px)}
+  #accueil-secondaires .menu-desc{display:none}
+  #accueil-statut{bottom:9vh}
+}
 
 /* ---------- Déconnexion en ligne ---------- */
 #boite-deconnexion{text-align:center;width:min(430px,92vw)}
@@ -166,6 +184,7 @@ button.mini{padding:6px 11px;font-size:12px}
   #carte-journal{flex:2 1 220px}
   .titre-bloc h1{font-size:22px}
   .titre-bloc p{display:none}
+  #accueil-statut{bottom:47vh}
 }
 </style>
 </head>
@@ -175,14 +194,15 @@ button.mini{padding:6px 11px;font-size:12px}
 <header id="entete">
   <div class="titre-bloc">
     <h1>ONDE</h1>
-    <p>Des pièces en superposition</p>
+    <p data-i18n="sousTitre">Pieces in superposition</p>
   </div>
   <div class="boutons">
-    <button id="btn-son" class="mini" title="Activer ou couper les effets sonores">Son : oui</button>
-    <button id="btn-accueil" class="mini cache">Accueil</button>
-    <button id="btn-regles">Règles</button>
-    <button id="btn-quitter-salon" class="cache">Quitter le salon</button>
-    <button id="btn-nouvelle" class="primary">Nouvelle partie</button>
+    <button id="btn-langue" class="mini" data-i18n-title="langTitre">FR</button>
+    <button id="btn-son" class="mini" data-i18n-title="sonTitre">Sound: on</button>
+    <button id="btn-accueil" class="mini cache" data-i18n="accueil">Home</button>
+    <button id="btn-regles" data-i18n="regles">Rules</button>
+    <button id="btn-quitter-salon" class="cache" data-i18n="quitterSalon">Leave room</button>
+    <button id="btn-nouvelle" class="primary" data-i18n="nouvelle">New game</button>
   </div>
 </header>
 
@@ -191,31 +211,27 @@ button.mini{padding:6px 11px;font-size:12px}
     <div id="pastille-tour"></div>
     <div>
       <div id="nom-tour">Azur</div>
-      <div id="detail-tour">au tour de jouer</div>
+      <div id="detail-tour" data-i18n="auTour">your turn</div>
     </div>
   </div>
   <div class="carte">
-    <div id="indice">Sélectionnez une de vos pièces.</div>
+    <div id="indice" data-i18n="indiceSel">Select one of your pieces.</div>
     <div class="modes cache" id="modes">
-      <button id="btn-mode-deplacer" class="actif">Déplacer</button>
-      <button id="btn-mode-scinder">Scinder</button>
+      <button id="btn-mode-deplacer" class="actif" data-i18n="btnDeplacer">Move</button>
+      <button id="btn-mode-scinder" data-i18n="btnScinder">Split</button>
     </div>
     <div id="compteur-split" class="cache"></div>
-    <button id="btn-confirmer-split" class="primary cache">Confirmer la scission</button>
-    <button id="btn-reduire" class="primary cache">Réduire ce fantôme</button>
+    <button id="btn-confirmer-split" class="primary cache" data-i18n="btnConfirmer">Confirm split</button>
+    <button id="btn-reduire" class="primary cache" data-i18n="btnReduire">Collapse this ghost</button>
   </div>
   <div class="carte legende">
-    <div class="legende-txt">
-      <b>Noyau</b>roi, 1 case
-      <b>Onde</b>1–2 cases en ligne
-      <b>Fantôme</b>superposition 50/50
-    </div>
+    <div class="legende-txt" data-i18n-html="legende"><b>Core</b>king, 1 cell<b>Wave</b>1–2 cells in a line<b>Ghost</b>50/50 superposition</div>
     <canvas id="leg-noyau" width="46" height="46"></canvas>
     <canvas id="leg-onde" width="46" height="46"></canvas>
     <canvas id="leg-fantome" width="46" height="46"></canvas>
   </div>
   <div class="carte" id="carte-journal">
-    <h3>Journal</h3>
+    <h3 data-i18n="journalTitre">Log</h3>
     <ul id="journal"></ul>
   </div>
 </aside>
@@ -225,121 +241,52 @@ button.mini{padding:6px 11px;font-size:12px}
 <div class="modal cache" id="modale-regles">
   <div class="boite">
     <h2>ONDE</h2>
-    <div class="sous">Des pièces en superposition — règles complètes</div>
-    <div class="regles">
-      <h4>Plateau et matériel</h4>
-      Un hexagone de 37 cases (rayon 3). Chaque camp dispose d'un <b>Noyau</b> (le roi) et de
-      trois <b>Ondes</b>. Azur occupe la rangée du bas, Corail celle du haut, en miroir.
-      Les cases se notent a1 … g7. <b>Azur commence.</b>
-
-      <h4>Solide et fantôme</h4>
-      Une pièce est <b>solide</b> (une seule case) ou <b>fantôme</b> : une onde en superposition
-      50/50 occupe alors <b>deux cases</b>, toutes deux montrées en pointillés avec un « ? ».
-      Personne — pas même son propriétaire — ne sait sur laquelle elle se trouve réellement :
-      la position n'existe qu'en probabilité, et seul un tirage la révèle.
-
-      <h4>Tour de jeu — une seule action</h4>
-      <b>1. Déplacer</b> une pièce solide : l'Onde glisse en ligne droite de 1 ou 2 cases
-      (6 directions, sans sauter de pièce solide) ; le Noyau d'exactement 1 case.
-      Interdit d'atterrir sur ses propres pièces, solides ou fantômes.<br>
-      <b>2. Scinder</b> une Onde solide : elle quitte sa case et devient un fantôme 50/50
-      sur <b>deux cases vides distinctes</b>, chacune atteignable par un déplacement légal
-      d'Onde (trajectoire totalement dégagée). Le Noyau ne se scinde jamais ; un fantôme
-      ne bouge pas et ne se scinde pas.<br>
-      <b>3. Réduire</b> un de ses fantômes : tirage équitable 50/50 — l'une des deux cases
-      devient l'onde solide, l'autre s'évapore.
-
-      <h4>Interaction = réduction</h4>
-      Dès qu'un fantôme est attaqué, traversé ou réduit, <b>il se réduit d'abord</b>.
-      Puis, si le survivant occupe la case visée par l'attaquant, il est <b>capturé</b>
-      si l'attaquant est ennemi (l'attaquant prend sa place) ; si le survivant est ailleurs,
-      l'attaque <b>passe au travers</b> (la case est en réalité vide). Une traversée de
-      2 cases qui rencontre un fantôme sur la première case le réduit, puis on continue.
-      Une case fantôme <b>bloque</b> tant qu'elle n'est pas réduite : y entrer déclenche la
-      réduction — cela vaut aussi pour vos propres fantômes (seul un tirage peut alors vous
-      barrer la route).
-
-      <h4>Capture et victoire</h4>
-      Atterrir sur une pièce ennemie solide la capture (un fantôme ne capture pas, puisqu'il
-      ne bouge pas, mais il peut être réduit ou capturé par interaction).
-      <b>Capturer le Noyau adverse remporte immédiatement la partie.</b>
-
-      <h4>Contre l'IA</h4>
-      Vous jouez <b>Azur</b>, l'IA joue <b>Corail</b>. Elle ne lit que le plateau public : les
-      fantômes — les siens comme les vôtres — restent pour elle des probabilités 50/50, elle ne
-      consulte jamais une position réelle interne. Niveau <b>Normal</b> : évaluation gloutonne en
-      espérance — capture sûre d'une solide (le Noyau en priorité), attaque de fantôme comptée à
-      demi-valeur, scission pour menacer ou fuir, réduction pour consolider, sécurité du Noyau
-      (distance, alignements). Niveau <b>Facile</b> : environ 60 % de coups aléatoires légaux.
-      Pendant son tour, « L'IA réfléchit… » s'affiche environ 800 ms, puis les animations
-      habituelles déroulent son coup — sans écran de passage.
-
-      <h4>En ligne — salon LOB7</h4>
-      Deux navigateurs ouverts dans le même salon LOB7. Chaque client annonce son identifiant :
-      le plus petit devient <b>Azur</b>, hôte-arbitre qui détient l'état réel et tire les
-      réductions ; l'autre est <b>Corail</b> et propose ses coups, que l'hôte valide, applique
-      et renvoie sous forme de <b>vue publique</b> — solides, fantômes en deux cases « ? »,
-      journal — jamais les positions réelles. Messages limités à 8 Ko, idempotence par clé,
-      bouton « Quitter le salon » et écran dédié en cas de déconnexion.
-
-      <div class="pourquoi">
-        Note honnête : l'hôte-arbitre connaît les tirages dès qu'ils surviennent et un hôte
-        malveillant pourrait les biaiser — ce mode repose sur la confiance accordée à l'hôte.
-      </div>
-      <div class="pourquoi">
-        Pourquoi impossible avant l'informatique : superpositions à probabilités cachées et
-        tirages équitables exigent un arbitre numérique.
-      </div>
-    </div>
-    <button class="fermer primary" id="btn-fermer-regles">Fermer</button>
+    <div class="sous" data-i18n="reglesSous">Pieces in superposition — full rules</div>
+    <div class="regles"></div>
+    <button class="fermer primary" id="btn-fermer-regles" data-i18n="fermer">Close</button>
   </div>
 </div>
 
 <div class="modal cache" id="modale-victoire">
   <div class="boite" id="boite-victoire">
-    <h2 id="titre-victoire">VICTOIRE</h2>
+    <h2 id="titre-victoire">VICTORY</h2>
     <p id="texte-victoire"></p>
-    <button class="primary" id="btn-rejouer">Rejouer</button>
-    <button class="cache" id="btn-quitter-fin">Quitter le salon</button>
+    <button class="primary" id="btn-rejouer" data-i18n="rejouer">Play again</button>
+    <button class="cache" id="btn-quitter-fin" data-i18n="quitterSalon">Leave room</button>
   </div>
 </div>
 
 <div class="modal" id="modale-accueil">
-  <div class="boite" id="boite-accueil">
-    <h2>ONDE</h2>
-    <div id="accueil-sous">Des pièces en superposition — laboratoire quantique</div>
-    <div class="menu">
+  <div id="boite-accueil">
+    <div id="accueil-titre">
+      <h2>ONDE</h2>
+      <div id="accueil-sous" data-i18n="accueilSous">Pieces in superposition — quantum lab</div>
+    </div>
+    <button id="btn-choix-ia" class="primary">
+      <span data-i18n="accueilIa">Play against the AI</span>
+      <span class="menu-desc" data-i18n="accueilIaDesc">You are Azur, the computer plays Corail (Normal) — it never reads the ghosts' real positions.</span>
+    </button>
+    <div id="accueil-secondaires">
+      <button id="btn-ia-facile" data-i18n="accueilFacile">Against the AI — Easy level</button>
       <button id="btn-choix-hotseat">
-        Deux joueurs — même écran
-        <span class="menu-desc">Azur et Corail alternent sur ce poste ; l'arbitre intégré
-        tire les réductions au hasard équitable.</span>
+        <span data-i18n="accueilHotseat">Two players — same screen</span>
+        <span class="menu-desc" data-i18n="accueilHotseatDesc">Azur and Corail alternate at this screen; the built-in referee draws fair random collapses.</span>
       </button>
-      <button id="btn-choix-ia">
-        Contre l'IA
-        <span class="menu-desc">Vous êtes Azur, l'ordinateur joue Corail — sans jamais lire
-        les positions réelles des fantômes.</span>
-      </button>
-      <div id="ia-choix" class="cache">
-        <button id="btn-ia-facile">Facile</button>
-        <button id="btn-ia-normal" class="primary">Normal</button>
-        <button id="btn-ia-retour" class="mini">Retour</button>
-      </div>
-      <button id="btn-choix-ligne" class="primary">
-        En ligne — salon LOB7
-        <span class="menu-desc">Deux navigateurs dans le même salon ; le plus petit identifiant
-        devient Azur, hôte-arbitre de la partie.</span>
+      <button id="btn-choix-ligne">
+        <span data-i18n="accueilLigne">Online — LOB7 room</span>
+        <span class="menu-desc" data-i18n="accueilLigneDesc">Two browsers in the same room; the smaller identifier becomes Azur, the host-referee.</span>
       </button>
     </div>
     <div id="accueil-statut"></div>
-    <button class="mini menu-retour cache" id="btn-accueil-annuler">Annuler</button>
+    <button class="mini cache" id="btn-accueil-annuler" data-i18n="annuler">Cancel</button>
   </div>
 </div>
 
 <div class="modal cache" id="modale-deconnexion">
   <div class="boite" id="boite-deconnexion">
-    <h2>SALON INTERROMPU</h2>
+    <h2 data-i18n="salonInterrompu">ROOM DISCONNECTED</h2>
     <p id="texte-deconnexion"></p>
-    <button class="primary" id="btn-deconnexion-accueil">Retour à l'accueil</button>
+    <button class="primary" id="btn-deconnexion-accueil" data-i18n="retourAccueil">Back to home</button>
   </div>
 </div>
 
@@ -534,6 +481,326 @@ button.mini{padding:6px 11px;font-size:12px}
    (vue.sprites / vue.fx / tweens). Coordonnées axiales (q,r),
    hexagones pointus (pointy-top). Aucune dépendance, aucun réseau.
    ===================================================================== */
+
+/* ---------------- Internationalisation ---------------- */
+/* Anglais par défaut, bascule FR via le bouton d'en-tête ; mémorisé en
+   sessionStorage (silencieux sous file://). « ONDE » et Azur/Corail inchangés. */
+var LANG="en";
+try{
+  var stockLang=sessionStorage.getItem("onde-lang");
+  if(stockLang==="fr"||stockLang==="en")LANG=stockLang;
+}catch(e){/* file:// ou stockage indisponible : on garde la valeur par défaut */}
+var STR={
+en:{
+  titre:"ONDE — Pieces in superposition",
+  sousTitre:"Pieces in superposition",
+  langTitre:"Switch to French",
+  sonTitre:"Turn the sound effects on or off",
+  sonOui:"Sound: on",sonNon:"Sound: off",
+  accueil:"Home",regles:"Rules",quitterSalon:"Leave room",nouvelle:"New game",
+  auTour:"your turn",sufIA:" (AI)",sufVous:" (you)",
+  matCore:"1 Core",matOnde1:"1 solid Wave",matOndeN:"{n} solid Waves",
+  matFantome1:"1 Ghost",matFantomeN:"{n} Ghosts",
+  journalTitre:"Log",
+  btnDeplacer:"Move",btnScinder:"Split",btnConfirmer:"Confirm split",btnReduire:"Collapse this ghost",
+  legende:'<b>Core</b>king, 1 cell<b>Wave</b>1–2 cells in a line<b>Ghost</b>50/50 superposition',
+  indiceSel:"Select one of your pieces.",
+  indiceSelCamp:"Select one of your {camp} pieces.",
+  indiceFantome:"Ghost in 50/50 superposition on {cells}.<br>Collapse it to draw its real cell.",
+  indiceNoyau:"The Core moves exactly one cell.",
+  depl1:"1 possible move — or switch to Split mode.",
+  deplN:"{n} possible moves — or switch to Split mode.",
+  indiceSci:"Pick two empty reachable cells, then confirm.",
+  cpt1:"{n}/2 cell chosen",cptN:"{n}/2 cells chosen",
+  et:"and",
+  finPartie:"Game over.",
+  iaPense:'The AI is thinking<span class="pulse-txt">…</span>',
+  coupTransmis:"Move sent — the host-referee is validating…",
+  auTourDe:"Waiting for {camp}…",
+  fermer:"Close",
+  reglesSous:"Pieces in superposition — full rules",
+  reglesHTML:"<h4>Board and material</h4>"+
+    "An hexagon of 37 cells (radius 3). Each side has one <b>Core</b> (the king) and three <b>Waves</b>. "+
+    "Azur occupies the bottom row, Corail the top one, mirrored. Cells are named a1 … g7. <b>Azur starts.</b>"+
+    "<h4>Solid and ghost</h4>"+
+    "A piece is either <b>solid</b> (a single cell) or a <b>ghost</b>: a wave in 50/50 superposition then "+
+    "occupies <b>two cells</b>, both shown dotted with a “?”. Nobody — not even its owner — knows which one "+
+    "it is really on: the position exists only as a probability, and only a draw can reveal it."+
+    "<h4>Turn of play — a single action</h4>"+
+    "<b>1. Move</b> a solid piece: a Wave slides in a straight line by 1 or 2 cells (6 directions, never "+
+    "jumping over a solid piece); the Core by exactly 1 cell. Landing on your own pieces, solid or ghost, "+
+    "is forbidden.<br>"+
+    "<b>2. Split</b> a solid Wave: it leaves its cell and becomes a 50/50 ghost over <b>two distinct empty "+
+    "cells</b>, each reachable by a legal Wave move (fully cleared path). The Core never splits; a ghost "+
+    "neither moves nor splits.<br>"+
+    "<b>3. Collapse</b> one of your ghosts: a fair 50/50 draw — one of the two cells becomes the solid "+
+    "wave, the other evaporates."+
+    "<h4>Interaction = collapse</h4>"+
+    "As soon as a ghost is attacked, crossed or collapsed, <b>it collapses first</b>. Then, if the survivor "+
+    "sits on the cell targeted by the attacker, it is <b>captured</b> if the attacker is an enemy (the "+
+    "attacker takes its place); if the survivor is elsewhere, the attack <b>passes through</b> (the cell is "+
+    "actually empty). A 2-cell slide that meets a ghost on the first cell collapses it, then carries on. "+
+    "A ghost cell <b>blocks</b> until it is collapsed: entering it triggers the collapse — this also applies "+
+    "to your own ghosts (only a draw can then bar your way)."+
+    "<h4>Capture and victory</h4>"+
+    "Landing on an enemy solid piece captures it (a ghost does not capture, since it never moves, but it "+
+    "can be collapsed or captured through interaction). <b>Capturing the enemy Core immediately wins the "+
+    "game.</b>"+
+    "<h4>Against the AI</h4>"+
+    "You play <b>Azur</b>, the AI plays <b>Corail</b>. It only reads the public board: ghosts — its own as "+
+    "well as yours — remain 50/50 probabilities to it; it never consults any hidden real position. "+
+    "<b>Normal</b> level: greedy expected-value evaluation — sure capture of a solid (the Core first), ghost "+
+    "attacks counted at half value, splits to threaten or flee, collapses to consolidate, Core safety "+
+    "(distance, alignments). <b>Easy</b> level: about 60% random legal moves. During its turn, “The AI is "+
+    "thinking…” shows for about 800 ms, then the usual animations play its move — with no interstitial screen."+
+    "<h4>Online — LOB7 room</h4>"+
+    "Two browsers open in the same LOB7 room. Each client announces its identifier: the smaller one becomes "+
+    "<b>Azur</b>, the host-referee who holds the real state and draws the collapses; the other is <b>Corail</b> "+
+    "and proposes its moves, which the host validates, applies and sends back as a <b>public view</b> — "+
+    "solids, ghosts as two “?” cells, log — never the real positions. Messages limited to 8 KB, idempotency "+
+    "by key, a “Leave room” button and a dedicated screen on disconnection."+
+    '<div class="pourquoi">Honest note: the host-referee learns each draw as soon as it happens, and a '+
+    'malicious host could bias them — this mode relies on the trust granted to the host.</div>'+
+    '<div class="pourquoi">Why impossible before computers: hidden 50/50 superpositions and fair draws '+
+    'require a digital referee.</div>',
+  victoireTitre:"VICTORY",patTitre:"DRAW",
+  victoireTexte:"The {camp} win.",
+  rNoyau:"The {camp} Core has been captured.",
+  rNoyauCell:"The {camp} Core ({cell}) is captured — {adv} wins!",
+  rBloque:"No legal moves left for either side.",
+  rejouer:"Play again",
+  salonInterrompu:"ROOM DISCONNECTED",retourAccueil:"Back to home",
+  accueilSous:"Pieces in superposition — quantum lab",
+  accueilIa:"Play against the AI",
+  accueilIaDesc:"You are Azur, the computer plays Corail (Normal) — it never reads the ghosts' real positions.",
+  accueilFacile:"Against the AI — Easy level",
+  accueilHotseat:"Two players — same screen",
+  accueilHotseatDesc:"Azur and Corail alternate at this screen; the built-in referee draws fair random collapses.",
+  accueilLigne:"Online — LOB7 room",
+  accueilLigneDesc:"Two browsers in the same room; the smaller identifier becomes Azur, the host-referee.",
+  annuler:"Cancel",facile:"Easy",normal:"Normal",
+  motNoyau:"Core",motOnde:"Wave",
+  jMvt:"{camp}: {piece} {a} → {b}.",
+  toastReduire:"Collapse: the piece was actually on {cell}.",
+  jRedVol:"Voluntary collapse: the {camp} wave was actually on {cell}.",
+  jRedInt:"Collapse by interaction: the {camp} wave was actually on {cell}.",
+  toastNoyauTombe:"The Core has fallen!",toastCapture:"Capture!",
+  jPriseOnde:"Capture: the {camp} wave ({cell}) is taken by {adv}.",
+  toastFantomeChemin:"Your ghost materialized on the path: the piece stops.",
+  jInterrompu:"{camp}: move stopped by its own ghost ({cell}).",
+  toastScission:"Split!",
+  jScission:"Split: the {camp} wave superposes between {a} and {b}.",
+  toastPasse:"{camp} has no legal move: turn skipped.",
+  jPasse:"{camp}: no legal move, turn skipped.",
+  toastImmobile:"This piece cannot act.",
+  toastCasesVides:"Split requires empty cells.",
+  toastIllegal:"Illegal move.",
+  sepNouvelle:"— New game —",toastNouvelle:"New game — Azur starts.",
+  jSalonAzur:"— LOB7 room: you are Azur, host-referee —",
+  toastAzurHote:"You are Azur — host-referee. Azur starts: your move.",
+  statutAdvTrouve:"Opponent found — you are Corail; the host is starting the game…",
+  jSalonCorail:"— LOB7 room: you are Corail —",
+  toastCorail:"You are Corail. Azur (host-referee) starts.",
+  refusDefaut:"The host-referee refused the move.",
+  refusTour:"It is not Corail's turn.",
+  refusIllegal:"Move rejected by the referee: illegal.",
+  toastResync:"Resynchronized on the referee's view.",
+  hoteMuet:"the host-referee is not responding anymore.",
+  salonFerne:"the room closed the connection.",
+  statutConnexion:"Connecting to the LOB7 room…",
+  statutRecherche:"Room joined — searching for an opponent…",
+  echecPersonne:"No opponent answered in the room.",
+  horsLob7:"Outside LOB7: this mode requires opening the page in its LOB7 preview (lob7.com) and choosing a room.",
+  echecSalon:"Could not join the room: {msg}.",
+  lob7Indispo:"LOB7 unavailable",
+  decoPerdue:"Connection lost — {msg} Back to home.",
+  decoParti:"Your opponent left the room. Back to home."
+},
+fr:{
+  titre:"ONDE — Des pièces en superposition",
+  sousTitre:"Des pièces en superposition",
+  langTitre:"Passer en anglais",
+  sonTitre:"Activer ou couper les effets sonores",
+  sonOui:"Son : oui",sonNon:"Son : non",
+  accueil:"Accueil",regles:"Règles",quitterSalon:"Quitter le salon",nouvelle:"Nouvelle partie",
+  auTour:"au tour de jouer",sufIA:" (IA)",sufVous:" (vous)",
+  matCore:"1 Noyau",matOnde1:"1 onde solide",matOndeN:"{n} ondes solides",
+  matFantome1:"1 fantôme",matFantomeN:"{n} fantômes",
+  journalTitre:"Journal",
+  btnDeplacer:"Déplacer",btnScinder:"Scinder",btnConfirmer:"Confirmer la scission",btnReduire:"Réduire ce fantôme",
+  legende:'<b>Noyau</b>roi, 1 case<b>Onde</b>1–2 cases en ligne<b>Fantôme</b>superposition 50/50',
+  indiceSel:"Sélectionnez une de vos pièces.",
+  indiceSelCamp:"Sélectionnez une de vos pièces {camp}.",
+  indiceFantome:"Fantôme en superposition 50/50 sur {cells}.<br>Le réduire tire au sort sa case réelle.",
+  indiceNoyau:"Le Noyau se déplace d'exactement une case.",
+  depl1:"1 déplacement possible — ou passez en mode Scinder.",
+  deplN:"{n} déplacements possibles — ou passez en mode Scinder.",
+  indiceSci:"Choisissez deux cases vides accessibles, puis confirmez.",
+  cpt1:"{n}/2 case choisie",cptN:"{n}/2 cases choisies",
+  et:"et",
+  finPartie:"Partie terminée.",
+  iaPense:'L\'IA réfléchit<span class="pulse-txt">…</span>',
+  coupTransmis:"Coup transmis — l'hôte-arbitre valide…",
+  auTourDe:"Au tour de {camp}…",
+  fermer:"Fermer",
+  reglesSous:"Des pièces en superposition — règles complètes",
+  reglesHTML:"<h4>Plateau et matériel</h4>"+
+    "Un hexagone de 37 cases (rayon 3). Chaque camp dispose d'un <b>Noyau</b> (le roi) et de "+
+    "trois <b>Ondes</b>. Azur occupe la rangée du bas, Corail celle du haut, en miroir. "+
+    "Les cases se notent a1 … g7. <b>Azur commence.</b>"+
+    "<h4>Solide et fantôme</h4>"+
+    "Une pièce est <b>solide</b> (une seule case) ou <b>fantôme</b> : une onde en superposition "+
+    "50/50 occupe alors <b>deux cases</b>, toutes deux montrées en pointillés avec un « ? ». "+
+    "Personne — pas même son propriétaire — ne sait sur laquelle elle se trouve réellement : "+
+    "la position n'existe qu'en probabilité, et seul un tirage la révèle."+
+    "<h4>Tour de jeu — une seule action</h4>"+
+    "<b>1. Déplacer</b> une pièce solide : l'Onde glisse en ligne droite de 1 ou 2 cases "+
+    "(6 directions, sans sauter de pièce solide) ; le Noyau d'exactement 1 case. "+
+    "Interdit d'atterrir sur ses propres pièces, solides ou fantômes.<br>"+
+    "<b>2. Scinder</b> une Onde solide : elle quitte sa case et devient un fantôme 50/50 "+
+    "sur <b>deux cases vides distinctes</b>, chacune atteignable par un déplacement légal "+
+    "d'Onde (trajectoire totalement dégagée). Le Noyau ne se scinde jamais ; un fantôme "+
+    "ne bouge pas et ne se scinde pas.<br>"+
+    "<b>3. Réduire</b> un de ses fantômes : tirage équitable 50/50 — l'une des deux cases "+
+    "devient l'onde solide, l'autre s'évapore."+
+    "<h4>Interaction = réduction</h4>"+
+    "Dès qu'un fantôme est attaqué, traversé ou réduit, <b>il se réduit d'abord</b>. "+
+    "Puis, si le survivant occupe la case visée par l'attaquant, il est <b>capturé</b> "+
+    "si l'attaquant est ennemi (l'attaquant prend sa place) ; si le survivant est ailleurs, "+
+    "l'attaque <b>passe au travers</b> (la case est en réalité vide). Une traversée de "+
+    "2 cases qui rencontre un fantôme sur la première case le réduit, puis on continue. "+
+    "Une case fantôme <b>bloque</b> tant qu'elle n'est pas réduite : y entrer déclenche la "+
+    "réduction — cela vaut aussi pour vos propres fantômes (seul un tirage peut alors vous "+
+    "barrer la route)."+
+    "<h4>Capture et victoire</h4>"+
+    "Atterrir sur une pièce ennemie solide la capture (un fantôme ne capture pas, puisqu'il "+
+    "ne bouge pas, mais il peut être réduit ou capturé par interaction). "+
+    "<b>Capturer le Noyau adverse remporte immédiatement la partie.</b>"+
+    "<h4>Contre l'IA</h4>"+
+    "Vous jouez <b>Azur</b>, l'IA joue <b>Corail</b>. Elle ne lit que le plateau public : les "+
+    "fantômes — les siens comme les vôtres — restent pour elle des probabilités 50/50, elle ne "+
+    "consulte jamais une position réelle interne. Niveau <b>Normal</b> : évaluation gloutonne en "+
+    "espérance — capture sûre d'une solide (le Noyau en priorité), attaque de fantôme comptée à "+
+    "demi-valeur, scission pour menacer ou fuir, réduction pour consolider, sécurité du Noyau "+
+    "(distance, alignements). Niveau <b>Facile</b> : environ 60 % de coups aléatoires légaux. "+
+    "Pendant son tour, « L'IA réfléchit… » s'affiche environ 800 ms, puis les animations "+
+    "habituelles déroulent son coup — sans écran de passage."+
+    "<h4>En ligne — salon LOB7</h4>"+
+    "Deux navigateurs ouverts dans le même salon LOB7. Chaque client annonce son identifiant : "+
+    "le plus petit devient <b>Azur</b>, hôte-arbitre qui détient l'état réel et tire les "+
+    "réductions ; l'autre est <b>Corail</b> et propose ses coups, que l'hôte valide, applique "+
+    "et renvoie sous forme de <b>vue publique</b> — solides, fantômes en deux cases « ? », "+
+    "journal — jamais les positions réelles. Messages limités à 8 Ko, idempotence par clé, "+
+    "bouton « Quitter le salon » et écran dédié en cas de déconnexion."+
+    '<div class="pourquoi">Note honnête : l\'hôte-arbitre connaît les tirages dès qu\'ils surviennent et '+
+    'un hôte malveillant pourrait les biaiser — ce mode repose sur la confiance accordée à l\'hôte.</div>'+
+    '<div class="pourquoi">Pourquoi impossible avant l\'informatique : superpositions à probabilités cachées '+
+    'et tirages équitables exigent un arbitre numérique.</div>',
+  victoireTitre:"VICTOIRE",patTitre:"PAT",
+  victoireTexte:"Les {camp} l'emportent.",
+  rNoyau:"Le Noyau {camp} a été capturé.",
+  rNoyauCell:"Le Noyau {camp} ({cell}) est capturé — victoire {adv} !",
+  rBloque:"Plus aucun coup légal de part et d'autre.",
+  rejouer:"Rejouer",
+  salonInterrompu:"SALON INTERROMPU",retourAccueil:"Retour à l'accueil",
+  accueilSous:"Des pièces en superposition — laboratoire quantique",
+  accueilIa:"Contre l'IA",
+  accueilIaDesc:"Vous êtes Azur, l'ordinateur joue Corail (Normal) — sans jamais lire les positions réelles des fantômes.",
+  accueilFacile:"Contre l'IA — niveau Facile",
+  accueilHotseat:"Deux joueurs — même écran",
+  accueilHotseatDesc:"Azur et Corail alternent sur ce poste ; l'arbitre intégré tire les réductions au hasard équitable.",
+  accueilLigne:"En ligne — salon LOB7",
+  accueilLigneDesc:"Deux navigateurs dans le même salon ; le plus petit identifiant devient Azur, hôte-arbitre de la partie.",
+  annuler:"Annuler",facile:"Facile",normal:"Normal",
+  motNoyau:"Noyau",motOnde:"Onde",
+  jMvt:"{camp} : {piece} {a} → {b}.",
+  toastReduire:"Réduction : la pièce était en réalité sur {cell}.",
+  jRedVol:"Réduction volontaire : l'onde {camp} était en réalité sur {cell}.",
+  jRedInt:"Réduction par interaction : l'onde {camp} était en réalité sur {cell}.",
+  toastNoyauTombe:"Le Noyau est tombé !",toastCapture:"Capture !",
+  jPriseOnde:"Capture : l'onde {camp} ({cell}) est prise par {adv}.",
+  toastFantomeChemin:"Votre fantôme s'est matérialisé sur le chemin : la pièce s'arrête.",
+  jInterrompu:"{camp} : déplacement interrompu par son propre fantôme ({cell}).",
+  toastScission:"Scission !",
+  jScission:"Scission : l'onde {camp} se superpose entre {a} et {b}.",
+  toastPasse:"{camp} n'a aucun coup légal : tour passé.",
+  jPasse:"{camp} : aucun coup légal, tour passé.",
+  toastImmobile:"Cette pièce ne peut pas agir.",
+  toastCasesVides:"La scission exige des cases vides.",
+  toastIllegal:"Coup illégal.",
+  sepNouvelle:"— Nouvelle partie —",toastNouvelle:"Nouvelle partie — Azur commence.",
+  jSalonAzur:"— Salon LOB7 : vous êtes Azur, hôte-arbitre —",
+  toastAzurHote:"Vous êtes Azur — hôte-arbitre. Azur commence : à vous.",
+  statutAdvTrouve:"Adversaire trouvé — vous êtes Corail ; l'hôte lance la partie…",
+  jSalonCorail:"— Salon LOB7 : vous êtes Corail —",
+  toastCorail:"Vous êtes Corail. Azur (hôte-arbitre) commence.",
+  refusDefaut:"L'hôte-arbitre a refusé le coup.",
+  refusTour:"Ce n'est pas le tour de Corail.",
+  refusIllegal:"Coup refusé par l'arbitre : illégal.",
+  toastResync:"Resynchronisé sur la vue de l'arbitre.",
+  hoteMuet:"l'hôte-arbitre ne répond plus.",
+  salonFerne:"le salon a fermé la connexion.",
+  statutConnexion:"Connexion au salon LOB7…",
+  statutRecherche:"Salon rejoint — recherche d'un adversaire…",
+  echecPersonne:"Aucun adversaire n'a répondu dans le salon.",
+  horsLob7:"Hors LOB7 : ce mode demande d'ouvrir la page dans son aperçu LOB7 et de choisir un salon.",
+  echecSalon:"Impossible de rejoindre le salon : {msg}.",
+  lob7Indispo:"LOB7 indisponible",
+  decoPerdue:"Connexion perdue — {msg} Retour à l'accueil.",
+  decoParti:"Votre adversaire a quitté le salon. Retour à l'accueil."
+}
+};
+function T(k){
+  var s=STR[LANG]&&STR[LANG][k];
+  if(s===undefined)s=STR.en[k];
+  return s===undefined?k:s;
+}
+function fmt(s,args){
+  return String(s).replace(/\{(\w+)\}/g,function(m,k){
+    return args&&args[k]!==undefined?args[k]:m;
+  });
+}
+var sonActif=true;
+/* Raisons de fin de partie : stockées sous forme de clé (i18n à l'affichage,
+   y compris pour les vues reçues du salon LOB7) — pure présentation. */
+function mkOverCore(vainqueur,perdant,cell){
+  var o={vainqueur:vainqueur,cle:"noyau",perdant:perdant};
+  if(cell)o.cell=cell;
+  return o;
+}
+function mkOverBloque(){return {vainqueur:null,cle:"bloque"};}
+function texteRaison(o){
+  if(!o)return"";
+  if(o.raison)return o.raison;                    /* compat anciens états */
+  if(o.cle==="noyau")
+    return o.cell?fmt(T("rNoyauCell"),{camp:FR[o.perdant],adv:FR[o.vainqueur],cell:o.cell})
+                 :fmt(T("rNoyau"),{camp:FR[o.perdant]});
+  if(o.cle==="bloque")return T("rBloque");
+  return"";
+}
+function majTextes(){
+  var i,els=document.querySelectorAll("[data-i18n]");
+  for(i=0;i<els.length;i++)els[i].textContent=T(els[i].getAttribute("data-i18n"));
+  els=document.querySelectorAll("[data-i18n-html]");
+  for(i=0;i<els.length;i++)els[i].innerHTML=T(els[i].getAttribute("data-i18n-html"));
+  els=document.querySelectorAll("[data-i18n-title]");
+  for(i=0;i<els.length;i++)els[i].setAttribute("title",T(els[i].getAttribute("data-i18n-title")));
+  var r=document.querySelector("#modale-regles .regles");
+  if(r)r.innerHTML=T("reglesHTML");
+  document.getElementById("btn-langue").textContent=LANG==="en"?"FR":"EN";
+  document.getElementById("btn-son").textContent=sonActif?T("sonOui"):T("sonNon");
+}
+function setLang(l){
+  LANG=l==="fr"?"fr":"en";
+  try{sessionStorage.setItem("onde-lang",LANG);}catch(e){}
+  document.documentElement.lang=LANG;
+  document.title=T("titre");
+  majTextes();
+  if(state)syncPanneau();
+}
+document.getElementById("btn-langue").addEventListener("click",function(){
+  setLang(LANG==="en"?"fr":"en");
+});
 
 /* ---------------- Utilitaires ---------------- */
 var SQRT3 = Math.sqrt(3);
@@ -768,7 +1035,7 @@ function simulerAction(piecesDepart,tour,action,tiragesF){
     if(!over2){
       var sui=adversaire(tour);
       if(peutAgir(sui,pc))turn2=sui;
-      else if(!peutAgir(tour,pc))over2={vainqueur:null,raison:"Plus aucun coup légal de part et d'autre."};
+      else if(!peutAgir(tour,pc))over2=mkOverBloque();
     }
     var e={p:prob,pieces:pc,turn:turn2,over:over2};
     if(FORCE)feuilles[0]=e;else feuilles.push(e);
@@ -817,9 +1084,7 @@ function simulerAction(piecesDepart,tour,action,tiragesF){
         if(sol&&sol.joueur!==pb.joueur){
           var b2=pc.filter(function(x){return x!==sol;});
           if(sol.type==="noyau")
-            over={vainqueur:pb.joueur,
-                  raison:"Le Noyau "+FR[sol.joueur].toLowerCase()+" ("+nomCase(next)+") est capturé — victoire "+
-                         FR[pb.joueur].toLowerCase()+" !"};
+            over=mkOverCore(pb.joueur,sol.joueur,nomCase(next));
           feuille(b2,prob,over);
         }else feuille(pc,prob,over);
       }
@@ -998,7 +1263,7 @@ function jouerAction(action,source){                  /* source : "local" | "ia"
   if(source==="ia"&&!(MODE==="ia"&&state.turn==="corail"))return false;
   if(MODE==="ligne"&&enLigne&&enLigne.rolesFixes){
     if(enLigne.moi==="corail"){                       /* Corail propose : l'hôte arbitre */
-      if(!simulerAction(state.pieces,state.turn,action,null).ok){toast("Coup illégal.");return false;}
+      if(!simulerAction(state.pieces,state.turn,action,null).ok){toast(T("toastIllegal"));return false;}
       var cle=identLob7();
       enLigne.attente=true;enLigne.cleAttente=cle;
       armerGardeCorail();
@@ -1006,7 +1271,7 @@ function jouerAction(action,source){                  /* source : "local" | "ia"
       syncPanneau();
       return true;
     }
-    if(!simulerAction(state.pieces,state.turn,action,null).ok){toast("Coup illégal.");return false;}
+    if(!simulerAction(state.pieces,state.turn,action,null).ok){toast(T("toastIllegal"));return false;}
     enLigne.actionEnCours={action:action};            /* Azur joue localement, puis diffuse */
     TIRAGE_LOG=[];TIRAGES_ATTM=null;
     appliquerActionAnime(action);
@@ -1346,7 +1611,8 @@ function opGlisser(p,vers,g){
     if(g!==GEN)return;
     p.cell={q:vers.q,r:vers.r};
     sp.q=vers.q;sp.r=vers.r;
-    journal(FR[p.joueur]+" : "+(p.type==="noyau"?"Noyau":"Onde")+" "+nomCase(de)+" → "+nomCase(vers)+".","mvt");
+    journal(fmt(T("jMvt"),{camp:FR[p.joueur],piece:p.type==="noyau"?T("motNoyau"):T("motOnde"),
+              a:nomCase(de),b:nomCase(vers)}),"mvt");
   });
 }
 function prochaineTirage(){
@@ -1384,9 +1650,9 @@ function opReduire(gh,cause,g){
         gh.mode="solide";gh.cell={q:surv.q,r:surv.r};gh.cells=null;
         vue.sprites[gh.id]={kind:"solid",q:surv.q,r:surv.r,alpha:1,scale:1,rot:0,flash:0};
         ajouteAnneau(surv,COUL.cyan);
-        toast("Réduction : la pièce était en réalité sur "+nomCase(surv)+".");
-        journal("Réduction "+(cause==="volontaire"?"volontaire":"par interaction")+
-                " : l'onde "+FR[gh.joueur].toLowerCase()+" était en réalité sur "+nomCase(surv)+".","evt");
+        toast(fmt(T("toastReduire"),{cell:nomCase(surv)}));
+        journal(fmt(T(cause==="volontaire"?"jRedVol":"jRedInt"),
+                {camp:FR[gh.joueur],cell:nomCase(surv)}),"evt");
       });
     });
   });
@@ -1406,14 +1672,12 @@ function opCapturer(att,vic,g){
     state.pieces=state.pieces.filter(function(x){return x!==vic;});
     delete vue.sprites[vic.id];
     if(vic.type==="noyau"){
-      state.over={vainqueur:att.joueur,raison:"Le Noyau "+FR[vic.joueur].toLowerCase()+" a été capturé."};
-      journal("Le Noyau "+FR[vic.joueur].toLowerCase()+" ("+nomCase(cell)+") est capturé — victoire "+
-              FR[att.joueur].toLowerCase()+" !","evt");
+      state.over=mkOverCore(att.joueur,vic.joueur,null);
+      journal(fmt(T("rNoyauCell"),{camp:FR[vic.joueur],adv:FR[att.joueur],cell:nomCase(cell)}),"evt");
     }else{
-      journal("Capture : l'onde "+FR[vic.joueur].toLowerCase()+" ("+nomCase(cell)+") est prise par "+
-              FR[att.joueur].toLowerCase()+".","evt");
+      journal(fmt(T("jPriseOnde"),{camp:FR[vic.joueur],cell:nomCase(cell),adv:FR[att.joueur]}),"evt");
     }
-    toast(vic.type==="noyau"?"Le Noyau est tombé !":"Capture !");
+    toast(vic.type==="noyau"?T("toastNoyauTombe"):T("toastCapture"));
   });
 }
 
@@ -1448,8 +1712,8 @@ function actionDeplacer(p,mv){
               opCapturer(p,gh,g).then(function(){finDeTour(g);});
             });
           }
-          toast("Votre fantôme s'est matérialisé sur le chemin : la pièce s'arrête.");
-          journal(FR[p.joueur]+" : déplacement interrompu par son propre fantôme ("+nomCase(next)+").","evt");
+          toast(T("toastFantomeChemin"));
+          journal(fmt(T("jInterrompu"),{camp:FR[p.joueur],cell:nomCase(next)}),"evt");
           return finDeTour(g);
         }
         return suite();                      /* attaque passée au travers : on continue */
@@ -1481,9 +1745,8 @@ function actionScinder(p,c1,c2){
       gs.cells[1].alpha=clamp((pr-.35)*1.6,0,1);
     }).then(function(){
       if(g!==GEN)return;
-      toast("Scission !");
-      journal("Scission : l'onde "+FR[p.joueur].toLowerCase()+" se superpose entre "+
-              nomCase(c1)+" et "+nomCase(c2)+".","evt");
+      toast(T("toastScission"));
+      journal(fmt(T("jScission"),{camp:FR[p.joueur],a:nomCase(c1),b:nomCase(c2)}),"evt");
       finDeTour(g);
     });
   });
@@ -1504,10 +1767,10 @@ function finDeTour(g){
   if(peutAgir(suivant)){
     state.turn=suivant;
   }else{
-    toast(FR[suivant]+" n'a aucun coup légal : tour passé.");
-    journal(FR[suivant]+" : aucun coup légal, tour passé.","evt");
+    toast(fmt(T("toastPasse"),{camp:FR[suivant]}));
+    journal(fmt(T("jPasse"),{camp:FR[suivant]}),"evt");
     if(!peutAgir(state.turn)){
-      state.over={vainqueur:null,raison:"Plus aucun coup légal de part et d'autre."};
+      state.over=mkOverBloque();
       busy=false;afficheVictoire();apresTour();return;
     }
   }
@@ -1544,7 +1807,7 @@ function selectionner(p){
     var mvs=deplacements(p);
     var sps=p.type==="onde"?casesScission(p):[];
     if(!mvs.length&&!sps.length){
-      toast("Cette pièce ne peut pas agir.");
+      toast(T("toastImmobile"));
       sel=null;syncPanneau();return;
     }
     sel={pid:p.id,kind:"solid",mode:mvs.length?"deplacer":"scinder",moves:mvs,splits:sps,picks:[]};
@@ -1565,7 +1828,7 @@ canvas.addEventListener("click",function(e){
   var p=pieceSur(c);
   if(sel&&sel.kind==="solid"&&sel.mode==="scinder"){
     if(p&&p.id===sel.pid){annulerSelection();return;}
-    if(p){toast("La scission exige des cases vides.");return;}
+      if(p){toast(T("toastCasesVides"));return;}
     var ok=sel.splits.some(function(s){return memeCase(s,c);});
     if(ok){
       var i=sel.picks.findIndex(function(x){return memeCase(x,c);});
@@ -1643,10 +1906,11 @@ function syncPanneau(){
   dom.nom.style.color=c;
   var ct=compter(state.turn);
   var suffixe="";
-  if(MODE==="ia"&&state.turn==="corail")suffixe=" (IA)";
-  if(MODE==="ligne"&&enLigne&&enLigne.rolesFixes&&state.turn===enLigne.moi)suffixe=" (vous)";
-  dom.detail.textContent="au tour de jouer"+suffixe+" — 1 Noyau, "+ct.solides+" onde"+(ct.solides>1?"s":"")+
-    " solide"+(ct.solides>1?"s":"")+(ct.fantomes?", "+ct.fantomes+" fantôme"+(ct.fantomes>1?"s":""):"");
+  if(MODE==="ia"&&state.turn==="corail")suffixe=T("sufIA");
+  if(MODE==="ligne"&&enLigne&&enLigne.rolesFixes&&state.turn===enLigne.moi)suffixe=T("sufVous");
+  var mat=T("matCore")+", "+fmt(ct.solides===1?T("matOnde1"):T("matOndeN"),{n:ct.solides});
+  if(ct.fantomes)mat+=", "+fmt(ct.fantomes===1?T("matFantome1"):T("matFantomeN"),{n:ct.fantomes});
+  dom.detail.textContent=T("auTour")+suffixe+" — "+mat;
   var p=sel?parId(sel.pid):null;
   dom.modes.classList.toggle("cache",!(sel&&sel.kind==="solid"&&p&&p.type==="onde"));
   dom.bRed.classList.toggle("cache",!(sel&&sel.kind==="ghost"));
@@ -1654,34 +1918,34 @@ function syncPanneau(){
   dom.bConf.classList.add("cache");
   dom.bConf.disabled=true;
   if(state.over){
-    dom.indice.textContent="Partie terminée.";
+    dom.indice.textContent=T("finPartie");
   }else if(MODE==="ia"&&state.turn==="corail"){
-    dom.indice.innerHTML='L\'IA réfléchit<span class="pulse-txt">…</span>';
+    dom.indice.innerHTML=T("iaPense");
   }else if(MODE==="ligne"&&enLigne&&enLigne.rolesFixes){
     if(enLigne.moi==="corail"&&enLigne.attente)
-      dom.indice.textContent="Coup transmis — l'hôte-arbitre valide…";
+      dom.indice.textContent=T("coupTransmis");
     else if(state.turn!==enLigne.moi)
-      dom.indice.textContent="Au tour de "+FR[adversaire(enLigne.moi)]+"…";
+      dom.indice.textContent=fmt(T("auTourDe"),{camp:FR[adversaire(enLigne.moi)]});
     else
-      dom.indice.textContent="Sélectionnez une de vos pièces.";
+      dom.indice.textContent=T("indiceSel");
   }else if(!sel){
-    dom.indice.textContent="Sélectionnez une de vos pièces "+FR[state.turn].toLowerCase()+".";
+    dom.indice.textContent=fmt(T("indiceSelCamp"),{camp:FR[state.turn]});
   }else if(sel.kind==="ghost"){
-    dom.indice.innerHTML="Fantôme en superposition 50/50 sur "+p.cells.map(nomCase).join(" et ")+
-      ".<br>Le réduire tire au sort sa case réelle.";
+    dom.indice.innerHTML=fmt(T("indiceFantome"),
+      {cells:p.cells.map(nomCase).join(" "+T("et")+" ")});
   }else if(sel.mode==="deplacer"){
     dom.indice.innerHTML=p.type==="noyau"
-      ?"Le Noyau se déplace d'exactement une case."
-      :sel.moves.length+" déplacement"+(sel.moves.length>1?"s":"")+" possible"+(sel.moves.length>1?"s":"")+
-       " — ou passez en mode Scinder.";
+      ?T("indiceNoyau")
+      :(sel.moves.length===1?T("depl1"):fmt(T("deplN"),{n:sel.moves.length}));
     dom.bDep.classList.add("actif");dom.bSci.classList.remove("actif");
   }else{
-    dom.indice.innerHTML="Choisissez deux cases vides accessibles, puis confirmez.";
+    dom.indice.innerHTML=T("indiceSci");
     dom.bSci.classList.add("actif");dom.bDep.classList.remove("actif");
     dom.cpt.classList.remove("cache");
-    dom.cpt.textContent=sel.picks.length+"/2 case"+(sel.picks.length>1?"s":"")+" choisie"+(sel.picks.length>1?"s":"")+
-      (sel.picks.length===2?" ("+sel.picks.map(nomCase).join(" ↔ ")+")":"");
-    if(sel.picks.length===2){
+    var nb=sel.picks.length;
+    dom.cpt.textContent=fmt(nb===1?T("cpt1"):T("cptN"),{n:nb})+
+      (nb===2?" ("+sel.picks.map(nomCase).join(" ↔ ")+")":"");
+    if(nb===2){
       dom.bConf.classList.remove("cache");
       dom.bConf.disabled=false;
     }
@@ -1711,10 +1975,10 @@ function afficheVictoire(){
   var titre=document.getElementById("titre-victoire");
   var texte=document.getElementById("texte-victoire");
   if(o.vainqueur){
-    titre.textContent="VICTOIRE";
+    titre.textContent=T("victoireTitre");
     titre.style.color=COUL[o.vainqueur];
     titre.style.textShadow="0 0 26px "+COUL[o.vainqueur];
-    texte.textContent="Les "+FR[o.vainqueur]+" l'emportent. "+o.raison;
+    texte.textContent=fmt(T("victoireTexte"),{camp:FR[o.vainqueur]})+" "+texteRaison(o);
     Snd.victoire();
     for(var i=0;i<5;i++)(function(i){
       setTimeout(function(){
@@ -1723,10 +1987,10 @@ function afficheVictoire(){
       },i*260);
     })(i);
   }else{
-    titre.textContent="PAT";
+    titre.textContent=T("patTitre");
     titre.style.color=COUL.texte;
     titre.style.textShadow="0 0 26px rgba(207,200,255,.5)";
-    texte.textContent=o.raison;
+    texte.textContent=texteRaison(o);
   }
   document.getElementById("modale-victoire").classList.remove("cache");
   document.getElementById("btn-rejouer").classList.toggle("cache",MODE==="ligne");
@@ -1740,8 +2004,8 @@ function nouvellePartie(){
   TIRAGES_ATTM=null;TIRAGE_LOG=null;
   state={pieces:piecesInitiales(),turn:"azur",over:null};
   document.getElementById("modale-victoire").classList.add("cache");
-  journal("— Nouvelle partie —","sep");
-  if(MODE!=="accueil")toast("Nouvelle partie — Azur commence.");
+  journal(T("sepNouvelle"),"sep");
+  if(MODE!=="accueil")toast(T("toastNouvelle"));
   syncPanneau();
 }
 document.getElementById("btn-nouvelle").addEventListener("click",nouvellePartie);
@@ -1756,7 +2020,8 @@ document.getElementById("modale-regles").addEventListener("click",function(e){
   if(e.target===this)this.classList.add("cache");
 });
 document.getElementById("btn-son").addEventListener("click",function(){
-  this.textContent=Snd.bascule()?"Son : oui":"Son : non";
+  sonActif=Snd.bascule();
+  this.textContent=sonActif?T("sonOui"):T("sonNon");
 });
 dom.bDep.addEventListener("click",function(){
   if(sel&&sel.kind==="solid"){sel.mode="deplacer";sel.picks=[];syncPanneau();}
@@ -1866,7 +2131,7 @@ function traiterMessageLob7(m){
   else if(d.type==="refus"&&enLigne.moi==="corail"&&enLigne.attente){
     enLigne.attente=false;enLigne.cleAttente=null;
     desarmerGardeCorail();
-    toast(d.motif||"L'hôte-arbitre a refusé le coup.");
+    toast(d.motif||T("refusDefaut"));
     syncPanneau();
   }
   else if(d.type==="fin"&&enLigne.moi==="corail"&&state&&!state.over&&
@@ -1890,12 +2155,12 @@ function resoudreRolesLob7(){                        /* élection : plus petit c
   if(enLigne.moi==="azur"){
     enLigne.rolesFixes=true;
     nouvellePartie();                                /* l'arbitre prépare l'état réel */
-    journal("— Salon LOB7 : vous êtes Azur, hôte-arbitre —","sep");
-    toast("Vous êtes Azur — hôte-arbitre. Azur commence : à vous.");
+    journal(T("jSalonAzur"),"sep");
+    toast(T("toastAzurHote"));
     montrerAccueil(false);basculeBoutonsMode();
     envoieVue();                                     /* vue 0 : plateau initial public */
   }else{
-    statutAccueil("Adversaire trouvé — vous êtes Corail ; l'hôte lance la partie…");
+    statutAccueil(T("statutAdvTrouve"));
   }
 }
 function hoteTraiteActionLob7(d){                    /* l'arbitre valide, tire, applique, diffusera */
@@ -1903,11 +2168,11 @@ function hoteTraiteActionLob7(d){                    /* l'arbitre valide, tire, 
   if(enLigne.cles.has(d.cle)){envoieVue();return;}   /* idempotence : renvoyer la dernière vue */
   if(busy){enLigne.fileAttente=d;return;}
   if(state.over||state.turn!=="corail"){
-    envoyerLob7({type:"refus",cle:d.cle,motif:"Ce n'est pas le tour de Corail."});
+    envoyerLob7({type:"refus",cle:d.cle,motif:T("refusTour")});
     return;
   }
   var sim=simulerAction(state.pieces,state.turn,d.action,[tirageEquitable(),tirageEquitable()]);
-  if(!sim.ok){envoyerLob7({type:"refus",cle:d.cle,motif:"Coup refusé par l'arbitre : illégal."});return;}
+  if(!sim.ok){envoyerLob7({type:"refus",cle:d.cle,motif:T("refusIllegal")});return;}
   enLigne.cles.add(d.cle);
   enLigne.actionEnCours={action:d.action};
   TIRAGES_ATTM=sim.tirages.slice();TIRAGE_LOG=[];
@@ -1925,8 +2190,8 @@ function corailTraiteVueLob7(payload){
   if(!enLigne.rolesFixes){
     enLigne.rolesFixes=true;
     poserEtat(payload.etat);
-    journal("— Salon LOB7 : vous êtes Corail —","sep");
-    toast("Vous êtes Corail. Azur (hôte-arbitre) commence.");
+    journal(T("jSalonCorail"),"sep");
+    toast(T("toastCorail"));
     montrerAccueil(false);basculeBoutonsMode();
     return;
   }
@@ -1945,7 +2210,7 @@ function reconcilierCorail(){                        /* l'état de l'arbitre fai
   if(!snap)return;
   if(JSON.stringify(snap)!==JSON.stringify(snapshotPublic())){
     poserEtat(snap);
-    toast("Resynchronisé sur la vue de l'arbitre.");
+    toast(T("toastResync"));
   }
   enLigne.cleAttente=null;
   desarmerGardeCorail();
@@ -1954,14 +2219,14 @@ function armerGardeCorail(){                         /* hôte muet : écran déd
   desarmerGardeCorail();
   enLigne.gardeAttente=setTimeout(function(){
     if(enLigne&&enLigne.attente)
-      salonPerdu({code:"HOTE_MUET",message:"l'hôte-arbitre ne répond plus."});
+      salonPerdu({code:"HOTE_MUET",message:T("hoteMuet")});
   },40000);
 }
 function desarmerGardeCorail(){
   if(enLigne&&enLigne.gardeAttente){clearTimeout(enLigne.gardeAttente);enLigne.gardeAttente=null;}
 }
 function demarrerEnLigne(){
-  statutAccueil("Connexion au salon LOB7…");
+  statutAccueil(T("statutConnexion"));
   domAcc.annuler.classList.remove("cache");
   LOB7Rooms.connect().then(function(conn){
     if(MODE!=="ligne")return;
@@ -1971,15 +2236,15 @@ function demarrerEnLigne(){
              fileAttente:null,gardeAttente:null,timers:[]};
     enLigne.timers.push(setInterval(pingLob7,3000));
     enLigne.timers.push(setTimeout(function(){
-      if(enLigne&&!enLigne.rolesFixes)echecLigne("Aucun adversaire n'a répondu dans le salon.");
+      if(enLigne&&!enLigne.rolesFixes)echecLigne(T("echecPersonne"));
     },30000));
     pingLob7();
     boucleLectureLob7();
-    statutAccueil("Salon rejoint — recherche d'un adversaire…");
+    statutAccueil(T("statutRecherche"));
   }).catch(function(e){
     var msg=e&&e.code==="ROOM_PREVIEW_REQUIRED"
-      ?"Hors LOB7 : ce mode demande d'ouvrir la page dans son aperçu LOB7 et de choisir un salon."
-      :"Impossible de rejoindre le salon : "+((e&&e.message)||"LOB7 indisponible")+".";
+      ?T("horsLob7")
+      :fmt(T("echecSalon"),{msg:(e&&e.message)||T("lob7Indispo")});
     echecLigne(msg);
   });
 }
@@ -1994,13 +2259,12 @@ function terminerLigne(envoyerBye){
 function salonPerdu(e){
   if(!enLigne)return;
   terminerLigne(false);
-  ecranDeconnexion("Connexion perdue — "+((e&&e.message)||"le salon a fermé la connexion.")+
-                   " Retour à l'accueil.");
+  ecranDeconnexion(fmt(T("decoPerdue"),{msg:(e&&e.message)||T("salonFerne")}));
 }
 function adversaireParti(){
   if(!enLigne)return;
   terminerLigne(false);
-  ecranDeconnexion("Votre adversaire a quitté le salon. Retour à l'accueil.");
+  ecranDeconnexion(T("decoParti"));
 }
 function ecranDeconnexion(msg){
   MODE="accueil";
@@ -2025,8 +2289,9 @@ var domAcc={
   annuler:document.getElementById("btn-accueil-annuler"),
   hotseat:document.getElementById("btn-choix-hotseat"),
   ia:document.getElementById("btn-choix-ia"),
+  facile:document.getElementById("btn-ia-facile"),
   ligne:document.getElementById("btn-choix-ligne"),
-  choix:document.getElementById("ia-choix")
+  secondaires:document.getElementById("accueil-secondaires")
 };
 function statutAccueil(txt){domAcc.statut.innerHTML=txt||"";}
 function montrerAccueil(v){
@@ -2034,10 +2299,8 @@ function montrerAccueil(v){
   document.getElementById("btn-accueil").classList.toggle("cache",!v);
 }
 function montrerMenuAccueil(menu){
-  domAcc.hotseat.classList.toggle("cache",!menu);
   domAcc.ia.classList.toggle("cache",!menu);
-  domAcc.ligne.classList.toggle("cache",!menu);
-  domAcc.choix.classList.add("cache");
+  domAcc.secondaires.classList.toggle("cache",!menu);
 }
 function basculeBoutonsMode(){
   document.getElementById("btn-nouvelle").classList.toggle("cache",MODE==="ligne");
@@ -2069,20 +2332,13 @@ function echecLigne(msg){
   toast(msg);
 }
 domAcc.hotseat.addEventListener("click",function(){entrerDansMode("hotseat");});
-domAcc.ia.addEventListener("click",function(){
-  domAcc.hotseat.classList.add("cache");
-  domAcc.ia.classList.add("cache");
-  domAcc.ligne.classList.add("cache");
-  domAcc.choix.classList.remove("cache");
-});
-document.getElementById("btn-ia-retour").addEventListener("click",function(){montrerMenuAccueil(true);});
-document.getElementById("btn-ia-facile").addEventListener("click",function(){IA.niveau="facile";entrerDansMode("ia");});
-document.getElementById("btn-ia-normal").addEventListener("click",function(){IA.niveau="normal";entrerDansMode("ia");});
+/* Le gros bouton central démarre directement une partie IA (Normal) :
+   la position initiale s'affiche, l'humain est Azur et commence. */
+domAcc.ia.addEventListener("click",function(){IA.niveau="normal";entrerDansMode("ia");});
+domAcc.facile.addEventListener("click",function(){IA.niveau="facile";entrerDansMode("ia");});
 domAcc.ligne.addEventListener("click",function(){
   MODE="ligne";
-  domAcc.hotseat.classList.add("cache");
-  domAcc.ia.classList.add("cache");
-  domAcc.ligne.classList.add("cache");
+  montrerMenuAccueil(false);
   demarrerEnLigne();
 });
 domAcc.annuler.addEventListener("click",function(){terminerLigne(false);allerAccueil();});
@@ -2136,6 +2392,7 @@ window.addEventListener("resize",disposition);
 Assets.boot();
 disposition();
 nouvellePartie();
+setLang(LANG);
 requestAnimationFrame(boucle);
 </script>
 </body>
